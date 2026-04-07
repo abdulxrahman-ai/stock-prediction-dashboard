@@ -4,21 +4,21 @@ A professional Streamlit dashboard for stock trend analysis, short-term forecast
 
 ## Features
 
-- On-page controls with no sidebar
-- Full-width trend and forecast charts
-- Premium stat-strip layout instead of default Streamlit cards
-- Key stats, technical snapshot, and news sentiment summary panels
-- Full-width sentiment table
-- Optional candlestick screenshot upload and AI interpretation
+On-page controls with no sidebar
+Full-width trend and forecast charts
+Premium stat-strip layout instead of default Streamlit cards
+Key stats, technical snapshot, and news sentiment summary panels
+Full-width sentiment table
+Optional candlestick screenshot upload and AI interpretation
 
 ## Optional image analysis
 
 Candlestick screenshot interpretation uses the OpenAI API **only if** you set `OPENAI_API_KEY` in your environment.
 
 Without that key:
-- the dashboard still works
-- market data, forecast, and news sentiment remain available
-- only the image-analysis section becomes informational
+the dashboard still works
+market data, forecast, and news sentiment remain available
+only the image-analysis section becomes informational
 
 ## Run locally
 
@@ -45,6 +45,6 @@ python -m streamlit run app.py
 
 ## Notes
 
-- Forecasting uses a simple lag-based linear regression model for demo and educational purposes.
-- News data is sourced from Google News RSS.
-- This project is for educational and portfolio use only.
+Forecasting uses a simple lag-based linear regression model for demo and educational purposes.
+News data is sourced from Google News RSS.
+This project is for educational and portfolio use only.
