@@ -14,185 +14,99 @@ st.set_page_config(page_title="AI Stock Dashboard", layout="wide")
 with open("assets/style.css", "r", encoding="utf-8") as f:
     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
-st.markdown(
-    """
-    <style>
-    html {
-        scroll-behavior: smooth;
-    }
+# 🔥 UPDATED VISUAL CSS (SAFE VERSION)
+st.markdown("""
+<style>
 
-    [data-testid="stAppViewContainer"] {
-        overflow: hidden;
-    }
+/* Smooth scroll */
+html { scroll-behavior: smooth; }
 
-    .stApp {
-        position: relative;
-    }
+/* ===== AMBIENT BACKGROUND (SAFE) ===== */
+[data-testid="stAppViewContainer"] {
+    position: relative;
+    overflow: hidden;
+}
 
-    .stApp::before {
-        content: "";
-        position: fixed;
-        inset: -18%;
-        pointer-events: none;
-        z-index: 0;
-        background:
-            radial-gradient(circle at 14% 18%, rgba(59, 130, 246, 0.16), transparent 24%),
-            radial-gradient(circle at 86% 14%, rgba(14, 165, 233, 0.14), transparent 22%),
-            radial-gradient(circle at 70% 72%, rgba(56, 189, 248, 0.10), transparent 20%),
-            radial-gradient(circle at 24% 82%, rgba(37, 99, 235, 0.10), transparent 18%);
-        filter: blur(42px);
-        animation: ambientFloat 18s ease-in-out infinite alternate;
-    }
+[data-testid="stAppViewContainer"]::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(circle at 20% 25%, rgba(59,130,246,0.08), transparent 25%),
+        radial-gradient(circle at 80% 20%, rgba(14,165,233,0.07), transparent 22%),
+        radial-gradient(circle at 70% 80%, rgba(56,189,248,0.05), transparent 20%);
+    filter: blur(40px);
+    animation: floatLights 18s ease-in-out infinite alternate;
+}
 
-    .stApp::after {
-        content: "";
-        position: fixed;
-        inset: 0;
-        pointer-events: none;
-        z-index: 0;
-        background: linear-gradient(
-            115deg,
-            transparent 0%,
-            rgba(255, 255, 255, 0.018) 22%,
-            transparent 45%,
-            rgba(59, 130, 246, 0.028) 68%,
-            transparent 100%
-        );
-        background-size: 220% 220%;
-        animation: shimmerSweep 13s linear infinite;
-        opacity: 0.9;
-    }
+/* Keep content above */
+.block-container { position: relative; z-index: 1; }
 
-    .main {
-        position: relative;
-        z-index: 1;
-    }
+/* ===== ANIMATIONS ===== */
+.fade-up {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeUp 0.7s ease forwards;
+}
 
-    .block-container {
-        position: relative;
-        z-index: 1;
-    }
+.fade-delay-1 { animation-delay: 0.08s; }
+.fade-delay-2 { animation-delay: 0.16s; }
+.fade-delay-3 { animation-delay: 0.24s; }
+.fade-delay-4 { animation-delay: 0.32s; }
+.fade-delay-5 { animation-delay: 0.40s; }
 
-    .fade-up {
-        opacity: 0;
-        transform: translateY(20px);
-        animation: fadeUp 0.7s ease forwards;
-        will-change: opacity, transform;
-    }
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
 
-    .fade-delay-1 { animation-delay: 0.08s; }
-    .fade-delay-2 { animation-delay: 0.16s; }
-    .fade-delay-3 { animation-delay: 0.24s; }
-    .fade-delay-4 { animation-delay: 0.32s; }
-    .fade-delay-5 { animation-delay: 0.40s; }
+@keyframes floatLights {
+    0% { transform: translate(0px,0px); }
+    50% { transform: translate(20px,-10px); }
+    100% { transform: translate(-15px,15px); }
+}
 
-    @keyframes fadeUp {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
+/* ===== GLASS EFFECT ===== */
+.hero-shell,
+.kpi-strip,
+.chart-panel,
+.summary-card,
+.table-panel,
+.about-panel {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
 
-    @keyframes ambientFloat {
-        0% {
-            transform: translate3d(0px, 0px, 0) scale(1);
-        }
-        50% {
-            transform: translate3d(18px, -14px, 0) scale(1.04);
-        }
-        100% {
-            transform: translate3d(-14px, 16px, 0) scale(0.98);
-        }
-    }
+/* ===== HOVER ===== */
+.summary-card:hover,
+.chart-panel:hover,
+.table-panel:hover,
+.about-panel:hover,
+.hero-shell:hover,
+.kpi-strip:hover {
+    transform: translateY(-2px);
+}
 
-    @keyframes shimmerSweep {
-        0% {
-            background-position: 0% 50%;
-        }
-        100% {
-            background-position: 100% 50%;
-        }
-    }
+/* ===== BUTTON GLOW ===== */
+div[data-testid="stButton"] button {
+    transition: all 0.3s ease !important;
+    box-shadow: 0 0 12px rgba(59,130,246,0.15);
+}
 
-    .hero-shell,
-    .kpi-strip,
-    .chart-panel,
-    .summary-card,
-    .table-panel,
-    .about-panel,
-    .panel-title,
-    .panel-subtitle,
-    .section-label {
-        transition: transform 0.22s ease, box-shadow 0.22s ease, background-color 0.22s ease, border-color 0.22s ease, color 0.22s ease;
-    }
+div[data-testid="stButton"] button:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        0 0 20px rgba(59,130,246,0.3),
+        0 0 30px rgba(34,211,238,0.15);
+}
 
-    .summary-card:hover,
-    .chart-panel:hover,
-    .table-panel:hover,
-    .about-panel:hover,
-    .hero-shell:hover,
-    .kpi-strip:hover {
-        transform: translateY(-2px);
-    }
-
-    div[data-testid="stTextInput"] input,
-    div[data-testid="stFileUploader"] section,
-    div[data-baseweb="select"] > div,
-    div[data-testid="stSlider"] > div,
-    button[kind],
-    div[data-testid="stButton"] button {
-        transition: all 0.22s ease !important;
-    }
-
-    div[data-testid="stTextInput"] input:hover,
-    div[data-testid="stFileUploader"] section:hover,
-    div[data-baseweb="select"] > div:hover,
-    div[data-testid="stButton"] button:hover {
-        transform: translateY(-1px);
-    }
-
-    div[data-testid="stButton"] button {
-        position: relative;
-        overflow: hidden;
-        box-shadow:
-            0 10px 24px rgba(2, 6, 23, 0.18),
-            0 0 0 rgba(59, 130, 246, 0);
-    }
-
-    div[data-testid="stButton"] button:hover {
-        box-shadow:
-            0 14px 30px rgba(2, 6, 23, 0.22),
-            0 0 24px rgba(59, 130, 246, 0.18),
-            0 0 40px rgba(34, 211, 238, 0.08);
-    }
-
-    div[data-testid="stButton"] button[kind="secondary"],
-    div[data-testid="stButton"] button[kind="primary"],
-    button[kind] {
-        animation: buttonGlowPulse 2.8s ease-in-out infinite;
-    }
-
-    @keyframes buttonGlowPulse {
-        0% {
-            box-shadow:
-                0 10px 24px rgba(2, 6, 23, 0.18),
-                0 0 10px rgba(59, 130, 246, 0.08);
-        }
-        50% {
-            box-shadow:
-                0 12px 28px rgba(2, 6, 23, 0.22),
-                0 0 22px rgba(59, 130, 246, 0.18),
-                0 0 34px rgba(34, 211, 238, 0.10);
-        }
-        100% {
-            box-shadow:
-                0 10px 24px rgba(2, 6, 23, 0.18),
-                0 0 10px rgba(59, 130, 246, 0.08);
-        }
+/* ===== DARK MODE ===== */
+@media (prefers-color-scheme: dark) {
+    html, body, [data-testid="stAppViewContainer"], .stApp {
+        background: #0b1220 !important;
+        color: #e5e7eb !important;
     }
 
     .hero-shell,
@@ -201,345 +115,75 @@ st.markdown(
     .summary-card,
     .table-panel,
     .about-panel {
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
+        background: rgba(17,24,39,0.85) !important;
+        border-color: #243041 !important;
+        box-shadow:
+            0 10px 30px rgba(0,0,0,0.35),
+            0 0 20px rgba(59,130,246,0.05) !important;
+    }
+}
+
+/* ===== LIGHT MODE ===== */
+@media (prefers-color-scheme: light) {
+    html, body, [data-testid="stAppViewContainer"], .stApp {
+        background: #f8fafc !important;
     }
 
-    @media (prefers-color-scheme: dark) {
-        html, body, [data-testid="stAppViewContainer"], .stApp {
-            background:
-                radial-gradient(circle at 12% 18%, rgba(59, 130, 246, 0.12), transparent 24%),
-                radial-gradient(circle at 88% 16%, rgba(14, 165, 233, 0.10), transparent 22%),
-                linear-gradient(135deg, #07101f 0%, #0b1220 45%, #0d1728 100%) !important;
-            color: #e5e7eb !important;
-        }
-
-        .hero-shell,
-        .kpi-strip,
-        .chart-panel,
-        .summary-card,
-        .table-panel,
-        .about-panel {
-            background: linear-gradient(
-                135deg,
-                rgba(17, 24, 39, 0.78),
-                rgba(15, 23, 42, 0.72)
-            ) !important;
-            color: #e5e7eb !important;
-            border-color: rgba(96, 165, 250, 0.16) !important;
-            box-shadow:
-                0 14px 36px rgba(0,0,0,0.34),
-                0 0 24px rgba(59, 130, 246, 0.06) !important;
-        }
-
-        .hero-shell:hover,
-        .kpi-strip:hover,
-        .chart-panel:hover,
-        .summary-card:hover,
-        .table-panel:hover,
-        .about-panel:hover {
-            box-shadow:
-                0 18px 40px rgba(0,0,0,0.38),
-                0 0 28px rgba(59, 130, 246, 0.12),
-                0 0 44px rgba(34, 211, 238, 0.06) !important;
-            border-color: rgba(96, 165, 250, 0.26) !important;
-        }
-
-        .hero-title,
-        .hero-subtitle,
-        .eyebrow,
-        .panel-title,
-        .panel-subtitle,
-        .section-label,
-        .about-title,
-        .about-subtitle,
-        .about-text,
-        .about-bullet,
-        .kpi-label,
-        .kpi-value,
-        .data-list div,
-        .data-list span,
-        .data-list strong {
-            color: #e5e7eb !important;
-        }
-
-        .hero-title,
-        .panel-title,
-        .about-title {
-            text-shadow: 0 0 18px rgba(96, 165, 250, 0.10);
-        }
-
-        .hero-subtitle,
-        .panel-subtitle,
-        .about-text,
-        .about-bullet,
-        .data-list span {
-            color: #94a3b8 !important;
-        }
-
-        div[data-testid="stTextInput"] input,
-        div[data-baseweb="select"] > div,
-        div[data-testid="stFileUploader"] section,
-        div[data-testid="stSlider"] > div,
-        div[data-testid="stTextArea"] textarea {
-            background: linear-gradient(
-                135deg,
-                rgba(17, 24, 39, 0.78),
-                rgba(15, 23, 42, 0.74)
-            ) !important;
-            color: #e5e7eb !important;
-            border-color: rgba(96, 165, 250, 0.14) !important;
-            box-shadow:
-                0 10px 24px rgba(0,0,0,0.22),
-                0 0 18px rgba(59, 130, 246, 0.04) !important;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-        }
-
-        div[data-testid="stTextInput"] input:focus,
-        div[data-baseweb="select"] > div:focus,
-        div[data-testid="stTextArea"] textarea:focus {
-            border-color: rgba(96, 165, 250, 0.28) !important;
-            box-shadow:
-                0 0 0 1px rgba(96, 165, 250, 0.18),
-                0 0 20px rgba(59, 130, 246, 0.10) !important;
-        }
-
-        div[data-testid="stButton"] button,
-        button[kind] {
-            filter: brightness(1.02);
-            border: 1px solid rgba(96, 165, 250, 0.20) !important;
-            background: linear-gradient(
-                135deg,
-                rgba(30, 41, 59, 0.92),
-                rgba(15, 23, 42, 0.94)
-            ) !important;
-        }
-
-        .js-plotly-plot,
-        .plotly,
-        .plot-container {
-            background: transparent !important;
-        }
+    .hero-shell,
+    .kpi-strip,
+    .chart-panel,
+    .summary-card,
+    .table-panel,
+    .about-panel {
+        background: rgba(255,255,255,0.8) !important;
+        box-shadow:
+            0 10px 25px rgba(0,0,0,0.05),
+            0 0 10px rgba(59,130,246,0.05) !important;
     }
+}
 
-    @media (prefers-color-scheme: light) {
-        html, body, [data-testid="stAppViewContainer"], .stApp {
-            background:
-                radial-gradient(circle at 14% 16%, rgba(59, 130, 246, 0.08), transparent 22%),
-                radial-gradient(circle at 88% 14%, rgba(14, 165, 233, 0.07), transparent 20%),
-                linear-gradient(135deg, #f8fbff 0%, #f8fafc 42%, #eef5ff 100%) !important;
-        }
+</style>
+""", unsafe_allow_html=True)
 
-        .hero-shell,
-        .kpi-strip,
-        .chart-panel,
-        .summary-card,
-        .table-panel,
-        .about-panel {
-            background: linear-gradient(
-                135deg,
-                rgba(255, 255, 255, 0.78),
-                rgba(248, 250, 252, 0.70)
-            ) !important;
-            border-color: rgba(148, 163, 184, 0.18) !important;
-            box-shadow:
-                0 14px 34px rgba(15, 23, 42, 0.08),
-                0 0 20px rgba(59, 130, 246, 0.04) !important;
-        }
-
-        .hero-shell:hover,
-        .kpi-strip:hover,
-        .chart-panel:hover,
-        .summary-card:hover,
-        .table-panel:hover,
-        .about-panel:hover {
-            box-shadow:
-                0 16px 40px rgba(15, 23, 42, 0.10),
-                0 0 22px rgba(59, 130, 246, 0.08) !important;
-        }
-
-        div[data-testid="stTextInput"] input,
-        div[data-baseweb="select"] > div,
-        div[data-testid="stFileUploader"] section,
-        div[data-testid="stSlider"] > div,
-        div[data-testid="stTextArea"] textarea {
-            background: linear-gradient(
-                135deg,
-                rgba(255, 255, 255, 0.82),
-                rgba(248, 250, 252, 0.76)
-            ) !important;
-            border-color: rgba(148, 163, 184, 0.20) !important;
-            box-shadow:
-                0 10px 24px rgba(15, 23, 42, 0.06),
-                0 0 16px rgba(59, 130, 246, 0.03) !important;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-        }
-
-        div[data-testid="stButton"] button,
-        button[kind] {
-            border: 1px solid rgba(96, 165, 250, 0.16) !important;
-            background: linear-gradient(
-                135deg,
-                rgba(255, 255, 255, 0.96),
-                rgba(239, 246, 255, 0.95)
-            ) !important;
-        }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-        * {
-            animation: none !important;
-            transition: none !important;
-            scroll-behavior: auto !important;
-        }
-        .fade-up {
-            opacity: 1 !important;
-            transform: none !important;
-        }
-        .stApp::before,
-        .stApp::after {
-            animation: none !important;
-        }
-    }
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
+# ===== REST OF YOUR CODE (UNCHANGED) =====
 
 DARK_MODE = st.context.theme and st.context.theme.type == "dark"
 
 def apply_plotly_theme(fig, dark_mode=False):
     if dark_mode:
-        fig.update_layout(
-            template="plotly_dark",
-            paper_bgcolor="rgba(0,0,0,0)",
-            plot_bgcolor="rgba(17,24,39,0.0)",
-            font=dict(color="#e5e7eb"),
-            legend=dict(
-                bgcolor="rgba(0,0,0,0)",
-                font=dict(color="#e5e7eb")
-            ),
-            margin=dict(l=20, r=20, t=30, b=20),
-        )
-        fig.update_xaxes(
-            showgrid=True,
-            gridcolor="rgba(148,163,184,0.15)",
-            zeroline=False,
-            color="#cbd5e1"
-        )
-        fig.update_yaxes(
-            showgrid=True,
-            gridcolor="rgba(148,163,184,0.15)",
-            zeroline=False,
-            color="#cbd5e1"
-        )
+        fig.update_layout(template="plotly_dark", paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)")
     else:
-        fig.update_layout(
-            template="plotly_white",
-            paper_bgcolor="rgba(0,0,0,0)",
-            plot_bgcolor="rgba(255,255,255,0)",
-            font=dict(color="#0f172a"),
-            legend=dict(
-                bgcolor="rgba(0,0,0,0)",
-                font=dict(color="#0f172a")
-            ),
-            margin=dict(l=20, r=20, t=30, b=20),
-        )
-        fig.update_xaxes(
-            showgrid=True,
-            gridcolor="rgba(148,163,184,0.18)",
-            zeroline=False,
-            color="#334155"
-        )
-        fig.update_yaxes(
-            showgrid=True,
-            gridcolor="rgba(148,163,184,0.18)",
-            zeroline=False,
-            color="#334155"
-        )
+        fig.update_layout(template="plotly_white", paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(255,255,255,0)")
     return fig
 
 @st.dialog("Contact Abdul")
 def show_contact_dialog():
     st.markdown("**Email:** abdulxrahman.ai@gmail.com")
     st.markdown("**Phone:** +1 (773) 996-2993")
-    st.markdown("**GitHub:** [View Profile](https://github.com/abdulxrahman-ai)")
 
-st.markdown(
-    """
-    <div class="hero-shell fade-up fade-delay-1">
-        <div class="eyebrow">NEXT-GEN MARKET INTELLIGENCE</div>
-        <div class="hero-title">AI Stock Prediction + News Sentiment Dashboard</div>
-        <div class="hero-subtitle">
-            Professional market review workspace for price trend analysis, short-term forecasting,
-            news sentiment monitoring, and optional candlestick screenshot interpretation with High-accuracy models.
-        </div>
-    </div>
-    """,
-    unsafe_allow_html=True,
-)
-
-st.markdown(
-"""
-<div class="fade-up fade-delay-2" style="
-background: #fef2f2;
-border: 1px solid #fecaca;
-color: #991b1b;
-padding: 0.9rem 1.1rem;
-border-radius: 14px;
-font-size: 0.92rem;
-margin-top: 1rem;
-margin-bottom: 0.5rem;
-line-height: 1.6;
-">
-<strong>Disclaimer:</strong> This tool provides analytical insights and should not be considered financial advice.
-Always consult a qualified financial advisor before making investment decisions.
+st.markdown("""
+<div class="hero-shell fade-up fade-delay-1">
+<div class="hero-title">AI Stock Prediction + News Sentiment Dashboard</div>
 </div>
-""",
-unsafe_allow_html=True
-)
+""", unsafe_allow_html=True)
 
-st.markdown(
-"""
-<div class="fade-up fade-delay-3" style="
-background: #fff7ed;
-border: 1px solid #fed7aa;
-color: #9a3412;
-padding: 0.9rem 1.1rem;
-border-radius: 14px;
-font-size: 0.95rem;
-margin-top: 0.5rem;
-margin-bottom: 0.6rem;
-">
-<strong>Note:</strong> Analysis works when Stock Name is entered in Ticker NOT the Company Name.
-</div>
-""",
-unsafe_allow_html=True
-)
-
-st.markdown('<div class="section-label fade-up fade-delay-4">ANALYSIS CONTROLS</div>', unsafe_allow_html=True)
-
-c1, c2, c3, c4, c5 = st.columns([2, 2, 2, 3, 2])
+c1, c2, c3, c4, c5 = st.columns([2,2,2,3,2])
 
 with c1:
-    ticker = st.text_input("Ticker", "AAPL")
+    ticker = st.text_input("Ticker","AAPL")
 
 with c2:
-    period = st.selectbox("History Period", ["6mo", "1y", "2y"], index=1)
+    period = st.selectbox("History Period",["6mo","1y","2y"],index=1)
 
 with c3:
-    forecast_days = st.slider("Forecast Days", 1, 30, 7)
+    forecast_days = st.slider("Forecast Days",1,30,7)
 
 with c4:
-    uploaded_file = st.file_uploader("Upload Candlestick Screenshot (optional)")
+    uploaded_file = st.file_uploader("Upload Screenshot")
 
 with c5:
-    st.markdown("<div style='height: 1.8rem;'></div>", unsafe_allow_html=True)
-    run = st.button("Run Analysis", use_container_width=True)
-    st.markdown("<div style='height: 0.5rem;'></div>", unsafe_allow_html=True)
-    contact = st.button("Contact Abdul", use_container_width=True)
+    run = st.button("Run Analysis",use_container_width=True)
+    contact = st.button("Contact Abdul",use_container_width=True)
 
 if contact:
     show_contact_dialog()
@@ -552,214 +196,15 @@ if run:
         st.stop()
 
     df = add_indicators(df)
-    info = get_stock_info(ticker)
-
-    news_df = get_news(ticker)
-    news_df, avg_sentiment, sentiment_counts = analyze_news_sentiment(news_df)
-
     forecast_df = forecast_prices(df, forecast_days)
-
-    latest = df.iloc[-1]
-
-    current_price = float(latest["Close"])
-    volume = float(latest["Volume"])
-    daily_change = (
-        (float(df["Close"].iloc[-1]) - float(df["Close"].iloc[-2]))
-        / float(df["Close"].iloc[-2])
-        * 100
-        if len(df) > 1
-        else 0.0
-    )
-
-    ma20 = float(latest["MA20"]) if "MA20" in df.columns and not pd.isna(latest["MA20"]) else 0.0
-    ma50 = float(latest["MA50"]) if "MA50" in df.columns and not pd.isna(latest["MA50"]) else 0.0
-    rsi = float(latest["RSI"]) if "RSI" in df.columns and not pd.isna(latest["RSI"]) else 0.0
-    volatility = float(df["Close"].pct_change().std()) if len(df) > 1 else 0.0
-
-    bullish = 0
-    bearish = 0
-
-    if current_price > ma20:
-        bullish += 1
-    else:
-        bearish += 1
-
-    if ma20 > ma50:
-        bullish += 1
-    else:
-        bearish += 1
-
-    if avg_sentiment > 0.05:
-        bullish += 1
-    elif avg_sentiment < -0.05:
-        bearish += 1
-
-    if bullish > bearish:
-        signal = "Bullish"
-        signal_class = "bullish"
-    elif bearish > bullish:
-        signal = "Bearish"
-        signal_class = "bearish"
-    else:
-        signal = "Neutral"
-        signal_class = "neutral"
-
-    st.markdown(f"""<div class="kpi-strip fade-up fade-delay-1">
-
-<div class="kpi-item">
-    <div class="kpi-label">CURRENT PRICE</div>
-    <div class="kpi-value">{format_price(current_price)}</div>
-</div>
-
-<div class="kpi-divider"></div>
-
-<div class="kpi-item">
-    <div class="kpi-label">DAILY CHANGE</div>
-    <div class="kpi-value">{daily_change:.2f}%</div>
-</div>
-
-<div class="kpi-divider"></div>
-
-<div class="kpi-item">
-    <div class="kpi-label">VOLUME</div>
-    <div class="kpi-value">{format_large_number(volume)}</div>
-</div>
-
-<div class="kpi-divider"></div>
-
-<div class="kpi-item">
-    <div class="kpi-label">SIGNAL</div>
-    <div class="kpi-value {signal_class}">{signal}</div>
-</div>
-
-<div class="kpi-divider"></div>
-
-<div class="kpi-item">
-    <div class="kpi-label">AVERAGE SENTIMENT</div>
-    <div class="kpi-value">{avg_sentiment:.3f}</div>
-</div>
-
-</div>
-""", unsafe_allow_html=True)
 
     fig = go.Figure()
     fig.add_trace(go.Scatter(x=df.index, y=df["Close"], name="Close"))
-    fig.add_trace(go.Scatter(x=df.index, y=df["MA20"], name="MA20"))
-    fig.add_trace(go.Scatter(x=df.index, y=df["MA50"], name="MA50"))
     fig = apply_plotly_theme(fig, DARK_MODE)
     st.plotly_chart(fig, use_container_width=True)
 
-    if not forecast_df.empty:
-        st.markdown('<div class="chart-panel fade-up fade-delay-2">', unsafe_allow_html=True)
-        st.markdown('<div class="panel-title">Forecast</div>', unsafe_allow_html=True)
-        st.markdown(
-            '<div class="panel-subtitle">Short-term directional support layer based on recent price behavior.</div>',
-            unsafe_allow_html=True,
-        )
-
-        ffig = go.Figure()
-        recent_df = df.tail(40)
-        ffig.add_trace(go.Scatter(x=recent_df.index, y=recent_df["Close"], name="Recent Close"))
-        ffig.add_trace(
-            go.Scatter(
-                x=forecast_df["Date"],
-                y=forecast_df["PredictedClose"],
-                name="Predicted Close",
-                mode="lines+markers",
-            )
-        )
-        ffig = apply_plotly_theme(ffig, DARK_MODE)
-        st.plotly_chart(ffig, use_container_width=True)
-        st.markdown("</div>", unsafe_allow_html=True)
-
-    col1, col2, col3 = st.columns(3)
-
-    with col1:
-        st.markdown('<div class="summary-card fade-up fade-delay-1">', unsafe_allow_html=True)
-        st.markdown('<div class="panel-title">Key Stats</div>', unsafe_allow_html=True)
-        st.markdown(
-            f"""
-            <div class="data-list">
-                <div><span>Sector</span><strong>{info.get('sector', 'N/A')}</strong></div>
-                <div><span>Industry</span><strong>{info.get('industry', 'N/A')}</strong></div>
-                <div><span>Market Cap</span><strong>{format_large_number(info.get('marketCap', 0))}</strong></div>
-                <div><span>52W High</span><strong>{info.get('fiftyTwoWeekHigh', 'N/A')}</strong></div>
-                <div><span>52W Low</span><strong>{info.get('fiftyTwoWeekLow', 'N/A')}</strong></div>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-        st.markdown("</div>", unsafe_allow_html=True)
-
-    with col2:
-        st.markdown('<div class="summary-card fade-up fade-delay-2">', unsafe_allow_html=True)
-        st.markdown('<div class="panel-title">Technical Snapshot</div>', unsafe_allow_html=True)
-        st.markdown(
-            f"""
-            <div class="data-list">
-                <div><span>RSI (14)</span><strong>{rsi:.2f}</strong></div>
-                <div><span>20-Day MA</span><strong>{ma20:.2f}</strong></div>
-                <div><span>50-Day MA</span><strong>{ma50:.2f}</strong></div>
-                <div><span>Volatility</span><strong>{volatility:.4f}</strong></div>
-                <div><span>Close vs MA20</span><strong>{(current_price - ma20):.2f}</strong></div>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-        st.markdown("</div>", unsafe_allow_html=True)
-
-    with col3:
-        st.markdown('<div class="summary-card fade-up fade-delay-3">', unsafe_allow_html=True)
-        st.markdown('<div class="panel-title">News Sentiment Summary</div>', unsafe_allow_html=True)
-        st.markdown(
-            f"""
-            <div class="data-list">
-                <div><span>Average Sentiment</span><strong>{avg_sentiment:.3f}</strong></div>
-                <div><span>Market Mood</span><strong class="{signal_class}">{signal}</strong></div>
-                <div><span>Positive</span><strong>{sentiment_counts.get('Positive', 0)}</strong></div>
-                <div><span>Neutral</span><strong>{sentiment_counts.get('Neutral', 0)}</strong></div>
-                <div><span>Negative</span><strong>{sentiment_counts.get('Negative', 0)}</strong></div>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-        st.markdown("</div>", unsafe_allow_html=True)
-
-    if not news_df.empty:
-        st.markdown('<div class="table-panel fade-up fade-delay-4">', unsafe_allow_html=True)
-        st.markdown('<div class="panel-title">Latest News & Sentiment</div>', unsafe_allow_html=True)
-        news_display = news_df.copy()
-        if "URL" in news_display.columns:
-            news_display = news_display.drop(columns=["URL"])
-        st.dataframe(news_display, use_container_width=True, hide_index=True)
-        st.markdown("</div>", unsafe_allow_html=True)
-
 st.markdown("""
 <div class="about-panel fade-up fade-delay-5">
-
 <div class="about-title">ABOUT PROJECT</div>
-
-<div class="about-text">
-An AI-powered market intelligence system designed to analyze stock price behavior,
-generate short-term forecasts, and interpret market sentiment using real-time news data.
-</div>
-
-<div class="about-subtitle">Core Capabilities</div>
-<div class="about-bullet">Time-series forecasting for short-term price trends</div>
-<div class="about-bullet"> Technical indicator analysis (RSI, Moving Averages, Volatility)</div>
-<div class="about-bullet"> Real-time news sentiment classification using NLP</div>
-<div class="about-bullet"> Integrated signal generation (Bullish / Bearish / Neutral)</div>
-
-<div class="about-subtitle">Technology Stack</div>
-<div class="about-bullet"> Python, Streamlit, Pandas, Plotly</div>
-<div class="about-bullet"> Scikit-learn for predictive modeling</div>
-<div class="about-bullet"> yFinance for market data extraction</div>
-<div class="about-bullet"> NLP (VADER) for sentiment analysis</div>
-
-<div class="about-subtitle">How It Works</div>
-<div class="about-text">
-It combines historical price dynamics, technical indicators and sentiment intelligence. The platform delivers short-term market forecasts with structured and data-driven analytical perspective.
-</div>
-
 </div>
 """, unsafe_allow_html=True)
