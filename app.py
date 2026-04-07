@@ -1,210 +1,216 @@
 import streamlit as st
-import pandas as pd
-import plotly.graph_objects as go
+import re
 
-from src.data_loader import get_stock_data, get_stock_info
-from src.indicators import add_indicators
-from src.forecasting import forecast_prices
-from src.news_fetcher import get_news
-from src.sentiment import analyze_news_sentiment
-from src.utils import format_large_number, format_price
+st.set_page_config(page_title="AI Resume Analyzer", layout="wide")
 
-st.set_page_config(page_title="AI Stock Dashboard", layout="wide")
-
-with open("assets/style.css", "r", encoding="utf-8") as f:
-    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
-
-# 🔥 UPDATED VISUAL CSS (SAFE VERSION)
-st.markdown("""
-<style>
-
-/* Smooth scroll */
-html { scroll-behavior: smooth; }
-
-/* ===== AMBIENT BACKGROUND (SAFE) ===== */
-[data-testid="stAppViewContainer"] {
-    position: relative;
-    overflow: hidden;
-}
-
-[data-testid="stAppViewContainer"]::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-    background:
-        radial-gradient(circle at 20% 25%, rgba(59,130,246,0.08), transparent 25%),
-        radial-gradient(circle at 80% 20%, rgba(14,165,233,0.07), transparent 22%),
-        radial-gradient(circle at 70% 80%, rgba(56,189,248,0.05), transparent 20%);
-    filter: blur(40px);
-    animation: floatLights 18s ease-in-out infinite alternate;
-}
-
-/* Keep content above */
-.block-container { position: relative; z-index: 1; }
-
-/* ===== ANIMATIONS ===== */
-.fade-up {
-    opacity: 0;
-    transform: translateY(20px);
-    animation: fadeUp 0.7s ease forwards;
-}
-
-.fade-delay-1 { animation-delay: 0.08s; }
-.fade-delay-2 { animation-delay: 0.16s; }
-.fade-delay-3 { animation-delay: 0.24s; }
-.fade-delay-4 { animation-delay: 0.32s; }
-.fade-delay-5 { animation-delay: 0.40s; }
-
-@keyframes fadeUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes floatLights {
-    0% { transform: translate(0px,0px); }
-    50% { transform: translate(20px,-10px); }
-    100% { transform: translate(-15px,15px); }
-}
-
-/* ===== GLASS EFFECT ===== */
-.hero-shell,
-.kpi-strip,
-.chart-panel,
-.summary-card,
-.table-panel,
-.about-panel {
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-}
-
-/* ===== HOVER ===== */
-.summary-card:hover,
-.chart-panel:hover,
-.table-panel:hover,
-.about-panel:hover,
-.hero-shell:hover,
-.kpi-strip:hover {
-    transform: translateY(-2px);
-}
-
-/* ===== BUTTON GLOW ===== */
-div[data-testid="stButton"] button {
-    transition: all 0.3s ease !important;
-    box-shadow: 0 0 12px rgba(59,130,246,0.15);
-}
-
-div[data-testid="stButton"] button:hover {
-    transform: translateY(-2px);
-    box-shadow:
-        0 0 20px rgba(59,130,246,0.3),
-        0 0 30px rgba(34,211,238,0.15);
-}
-
-/* ===== DARK MODE ===== */
-@media (prefers-color-scheme: dark) {
-    html, body, [data-testid="stAppViewContainer"], .stApp {
-        background: #0b1220 !important;
-        color: #e5e7eb !important;
+st.markdown(
+    """
+    <style>
+    html {
+        scroll-behavior: smooth;
     }
 
-    .hero-shell,
-    .kpi-strip,
-    .chart-panel,
-    .summary-card,
-    .table-panel,
-    .about-panel {
-        background: rgba(17,24,39,0.85) !important;
-        border-color: #243041 !important;
-        box-shadow:
-            0 10px 30px rgba(0,0,0,0.35),
-            0 0 20px rgba(59,130,246,0.05) !important;
-    }
-}
-
-/* ===== LIGHT MODE ===== */
-@media (prefers-color-scheme: light) {
-    html, body, [data-testid="stAppViewContainer"], .stApp {
-        background: #f8fafc !important;
+    .main {
+        animation: fadeInPage 0.8s ease-in-out;
     }
 
-    .hero-shell,
-    .kpi-strip,
-    .chart-panel,
-    .summary-card,
-    .table-panel,
-    .about-panel {
-        background: rgba(255,255,255,0.8) !important;
-        box-shadow:
-            0 10px 25px rgba(0,0,0,0.05),
-            0 0 10px rgba(59,130,246,0.05) !important;
+    @keyframes fadeInPage {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
-}
 
-</style>
-""", unsafe_allow_html=True)
+    .fade-section {
+        animation: fadeUp 0.7s ease both;
+    }
 
-# ===== REST OF YOUR CODE (UNCHANGED) =====
+    .fade-delay-1 {
+        animation-delay: 0.08s;
+    }
 
-DARK_MODE = st.context.theme and st.context.theme.type == "dark"
+    .fade-delay-2 {
+        animation-delay: 0.16s;
+    }
 
-def apply_plotly_theme(fig, dark_mode=False):
-    if dark_mode:
-        fig.update_layout(template="plotly_dark", paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)")
+    .fade-delay-3 {
+        animation-delay: 0.24s;
+    }
+
+    .fade-delay-4 {
+        animation-delay: 0.32s;
+    }
+
+    .fade-delay-5 {
+        animation-delay: 0.4s;
+    }
+
+    @keyframes fadeUp {
+        from {
+            opacity: 0;
+            transform: translateY(18px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    div[data-testid="stMetric"] {
+        border: 1px solid rgba(148, 163, 184, 0.22);
+        border-radius: 18px;
+        padding: 14px 10px;
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+        background: rgba(255, 255, 255, 0.02);
+    }
+
+    div[data-testid="stMetric"]:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 14px 32px rgba(15, 23, 42, 0.10);
+    }
+
+    div.stButton > button {
+        transition: all 0.25s ease;
+        border-radius: 12px;
+    }
+
+    div.stButton > button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12);
+    }
+
+    div[data-testid="stTextArea"] textarea {
+        transition: all 0.25s ease;
+        border-radius: 12px;
+    }
+
+    div[data-testid="stTextArea"] textarea:focus {
+        box-shadow: 0 0 0 1px rgba(100, 116, 139, 0.35);
+    }
+
+    div[data-testid="stProgressBar"] > div > div {
+        transition: width 0.6s ease-in-out;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+SKILLS = [
+    "python", "sql", "machine learning", "deep learning", "nlp",
+    "pandas", "numpy", "tensorflow", "pytorch", "fastapi",
+    "streamlit", "data analysis", "power bi", "tableau",
+    "excel", "aws", "docker", "git", "api"
+]
+
+def analyze_resume(resume, jd):
+    resume = resume.lower()
+    jd = jd.lower()
+
+    matched = [s for s in SKILLS if s in resume]
+    missing = [s for s in SKILLS if s in jd and s not in resume]
+
+    score = min(95, 50 + len(matched) * 3 - len(missing) * 2)
+
+    strengths = []
+    improvements = []
+
+    if matched:
+        strengths.append(f"Strong skills detected: {', '.join(matched[:5])}")
+
+    if "project" in resume:
+        strengths.append("Projects section detected — good for technical roles")
+
+    if not strengths:
+        strengths.append("Basic resume structure present")
+
+    if missing:
+        improvements.append(f"Add these skills: {', '.join(missing[:5])}")
+
+    improvements.append("Add measurable achievements (%, numbers)")
+    improvements.append("Use more action verbs (built, developed, created)")
+
+    return score, matched, missing, strengths, improvements
+
+
+st.markdown('<div class="fade-section fade-delay-1">', unsafe_allow_html=True)
+st.title("AI Resume Analyzer")
+st.markdown('</div>', unsafe_allow_html=True)
+
+st.markdown('<div class="fade-section fade-delay-2">', unsafe_allow_html=True)
+st.write("Upload your resume or paste text to analyze.")
+st.markdown('</div>', unsafe_allow_html=True)
+
+st.markdown('<div class="fade-section fade-delay-3">', unsafe_allow_html=True)
+resume_text = st.text_area("Paste Resume Text")
+st.markdown('</div>', unsafe_allow_html=True)
+
+st.markdown('<div class="fade-section fade-delay-4">', unsafe_allow_html=True)
+job_description = st.text_area(
+    "Paste Job Description",
+    value="Looking for AI/ML Engineer with Python, ML, SQL, FastAPI"
+)
+st.markdown('</div>', unsafe_allow_html=True)
+
+st.markdown('<div class="fade-section fade-delay-5">', unsafe_allow_html=True)
+analyze_clicked = st.button("Analyze Resume")
+st.markdown('</div>', unsafe_allow_html=True)
+
+if analyze_clicked:
+
+    if not resume_text.strip():
+        st.warning("Please paste resume text")
     else:
-        fig.update_layout(template="plotly_white", paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(255,255,255,0)")
-    return fig
+        score, matched, missing, strengths, improvements = analyze_resume(resume_text, job_description)
 
-@st.dialog("Contact Abdul")
-def show_contact_dialog():
-    st.markdown("**Email:** abdulxrahman.ai@gmail.com")
-    st.markdown("**Phone:** +1 (773) 996-2993")
+        st.markdown('<div class="fade-section">', unsafe_allow_html=True)
+        st.subheader("Results")
+        st.markdown('</div>', unsafe_allow_html=True)
 
-st.markdown("""
-<div class="hero-shell fade-up fade-delay-1">
-<div class="hero-title">AI Stock Prediction + News Sentiment Dashboard</div>
-</div>
-""", unsafe_allow_html=True)
+        col1, col2, col3 = st.columns(3)
 
-c1, c2, c3, c4, c5 = st.columns([2,2,2,3,2])
+        with col1:
+            st.markdown('<div class="fade-section fade-delay-1">', unsafe_allow_html=True)
+            st.metric("Score", f"{score}%")
+            st.markdown('</div>', unsafe_allow_html=True)
 
-with c1:
-    ticker = st.text_input("Ticker","AAPL")
+        with col2:
+            st.markdown('<div class="fade-section fade-delay-2">', unsafe_allow_html=True)
+            st.metric("Matched Skills", len(matched))
+            st.markdown('</div>', unsafe_allow_html=True)
 
-with c2:
-    period = st.selectbox("History Period",["6mo","1y","2y"],index=1)
+        with col3:
+            st.markdown('<div class="fade-section fade-delay-3">', unsafe_allow_html=True)
+            st.metric("Missing Skills", len(missing))
+            st.markdown('</div>', unsafe_allow_html=True)
 
-with c3:
-    forecast_days = st.slider("Forecast Days",1,30,7)
+        st.markdown('<div class="fade-section fade-delay-2">', unsafe_allow_html=True)
+        st.progress(score / 100)
+        st.markdown('</div>', unsafe_allow_html=True)
 
-with c4:
-    uploaded_file = st.file_uploader("Upload Screenshot")
+        st.markdown('<div class="fade-section fade-delay-2">', unsafe_allow_html=True)
+        st.subheader("Matched Skills")
+        st.write(matched)
+        st.markdown('</div>', unsafe_allow_html=True)
 
-with c5:
-    run = st.button("Run Analysis",use_container_width=True)
-    contact = st.button("Contact Abdul",use_container_width=True)
+        st.markdown('<div class="fade-section fade-delay-3">', unsafe_allow_html=True)
+        st.subheader("Missing Skills")
+        st.write(missing)
+        st.markdown('</div>', unsafe_allow_html=True)
 
-if contact:
-    show_contact_dialog()
+        st.markdown('<div class="fade-section fade-delay-4">', unsafe_allow_html=True)
+        st.subheader("Strengths")
+        for s in strengths:
+            st.success(s)
+        st.markdown('</div>', unsafe_allow_html=True)
 
-if run:
-    df = get_stock_data(ticker, period)
-
-    if df is None or df.empty:
-        st.error("No data found.")
-        st.stop()
-
-    df = add_indicators(df)
-    forecast_df = forecast_prices(df, forecast_days)
-
-    fig = go.Figure()
-    fig.add_trace(go.Scatter(x=df.index, y=df["Close"], name="Close"))
-    fig = apply_plotly_theme(fig, DARK_MODE)
-    st.plotly_chart(fig, use_container_width=True)
-
-st.markdown("""
-<div class="about-panel fade-up fade-delay-5">
-<div class="about-title">ABOUT PROJECT</div>
-</div>
-""", unsafe_allow_html=True)
+        st.markdown('<div class="fade-section fade-delay-5">', unsafe_allow_html=True)
+        st.subheader("Improvements")
+        for i in improvements:
+            st.warning(i)
+        st.markdown('</div>', unsafe_allow_html=True)
