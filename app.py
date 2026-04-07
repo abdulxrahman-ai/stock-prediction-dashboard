@@ -21,6 +21,58 @@ st.markdown(
         scroll-behavior: smooth;
     }
 
+    [data-testid="stAppViewContainer"] {
+        overflow: hidden;
+    }
+
+    .stApp {
+        position: relative;
+    }
+
+    .stApp::before {
+        content: "";
+        position: fixed;
+        inset: -18%;
+        pointer-events: none;
+        z-index: 0;
+        background:
+            radial-gradient(circle at 14% 18%, rgba(59, 130, 246, 0.16), transparent 24%),
+            radial-gradient(circle at 86% 14%, rgba(14, 165, 233, 0.14), transparent 22%),
+            radial-gradient(circle at 70% 72%, rgba(56, 189, 248, 0.10), transparent 20%),
+            radial-gradient(circle at 24% 82%, rgba(37, 99, 235, 0.10), transparent 18%);
+        filter: blur(42px);
+        animation: ambientFloat 18s ease-in-out infinite alternate;
+    }
+
+    .stApp::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 0;
+        background: linear-gradient(
+            115deg,
+            transparent 0%,
+            rgba(255, 255, 255, 0.018) 22%,
+            transparent 45%,
+            rgba(59, 130, 246, 0.028) 68%,
+            transparent 100%
+        );
+        background-size: 220% 220%;
+        animation: shimmerSweep 13s linear infinite;
+        opacity: 0.9;
+    }
+
+    .main {
+        position: relative;
+        z-index: 1;
+    }
+
+    .block-container {
+        position: relative;
+        z-index: 1;
+    }
+
     .fade-up {
         opacity: 0;
         transform: translateY(20px);
@@ -45,6 +97,27 @@ st.markdown(
         }
     }
 
+    @keyframes ambientFloat {
+        0% {
+            transform: translate3d(0px, 0px, 0) scale(1);
+        }
+        50% {
+            transform: translate3d(18px, -14px, 0) scale(1.04);
+        }
+        100% {
+            transform: translate3d(-14px, 16px, 0) scale(0.98);
+        }
+    }
+
+    @keyframes shimmerSweep {
+        0% {
+            background-position: 0% 50%;
+        }
+        100% {
+            background-position: 100% 50%;
+        }
+    }
+
     .hero-shell,
     .kpi-strip,
     .chart-panel,
@@ -54,13 +127,15 @@ st.markdown(
     .panel-title,
     .panel-subtitle,
     .section-label {
-        transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+        transition: transform 0.22s ease, box-shadow 0.22s ease, background-color 0.22s ease, border-color 0.22s ease, color 0.22s ease;
     }
 
     .summary-card:hover,
     .chart-panel:hover,
     .table-panel:hover,
-    .about-panel:hover {
+    .about-panel:hover,
+    .hero-shell:hover,
+    .kpi-strip:hover {
         transform: translateY(-2px);
     }
 
@@ -70,7 +145,7 @@ st.markdown(
     div[data-testid="stSlider"] > div,
     button[kind],
     div[data-testid="stButton"] button {
-        transition: all 0.2s ease !important;
+        transition: all 0.22s ease !important;
     }
 
     div[data-testid="stTextInput"] input:hover,
@@ -80,9 +155,62 @@ st.markdown(
         transform: translateY(-1px);
     }
 
+    div[data-testid="stButton"] button {
+        position: relative;
+        overflow: hidden;
+        box-shadow:
+            0 10px 24px rgba(2, 6, 23, 0.18),
+            0 0 0 rgba(59, 130, 246, 0);
+    }
+
+    div[data-testid="stButton"] button:hover {
+        box-shadow:
+            0 14px 30px rgba(2, 6, 23, 0.22),
+            0 0 24px rgba(59, 130, 246, 0.18),
+            0 0 40px rgba(34, 211, 238, 0.08);
+    }
+
+    div[data-testid="stButton"] button[kind="secondary"],
+    div[data-testid="stButton"] button[kind="primary"],
+    button[kind] {
+        animation: buttonGlowPulse 2.8s ease-in-out infinite;
+    }
+
+    @keyframes buttonGlowPulse {
+        0% {
+            box-shadow:
+                0 10px 24px rgba(2, 6, 23, 0.18),
+                0 0 10px rgba(59, 130, 246, 0.08);
+        }
+        50% {
+            box-shadow:
+                0 12px 28px rgba(2, 6, 23, 0.22),
+                0 0 22px rgba(59, 130, 246, 0.18),
+                0 0 34px rgba(34, 211, 238, 0.10);
+        }
+        100% {
+            box-shadow:
+                0 10px 24px rgba(2, 6, 23, 0.18),
+                0 0 10px rgba(59, 130, 246, 0.08);
+        }
+    }
+
+    .hero-shell,
+    .kpi-strip,
+    .chart-panel,
+    .summary-card,
+    .table-panel,
+    .about-panel {
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+    }
+
     @media (prefers-color-scheme: dark) {
         html, body, [data-testid="stAppViewContainer"], .stApp {
-            background: #0b1220 !important;
+            background:
+                radial-gradient(circle at 12% 18%, rgba(59, 130, 246, 0.12), transparent 24%),
+                radial-gradient(circle at 88% 16%, rgba(14, 165, 233, 0.10), transparent 22%),
+                linear-gradient(135deg, #07101f 0%, #0b1220 45%, #0d1728 100%) !important;
             color: #e5e7eb !important;
         }
 
@@ -92,10 +220,29 @@ st.markdown(
         .summary-card,
         .table-panel,
         .about-panel {
-            background: #111827 !important;
+            background: linear-gradient(
+                135deg,
+                rgba(17, 24, 39, 0.78),
+                rgba(15, 23, 42, 0.72)
+            ) !important;
             color: #e5e7eb !important;
-            border-color: #243041 !important;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.35) !important;
+            border-color: rgba(96, 165, 250, 0.16) !important;
+            box-shadow:
+                0 14px 36px rgba(0,0,0,0.34),
+                0 0 24px rgba(59, 130, 246, 0.06) !important;
+        }
+
+        .hero-shell:hover,
+        .kpi-strip:hover,
+        .chart-panel:hover,
+        .summary-card:hover,
+        .table-panel:hover,
+        .about-panel:hover {
+            box-shadow:
+                0 18px 40px rgba(0,0,0,0.38),
+                0 0 28px rgba(59, 130, 246, 0.12),
+                0 0 44px rgba(34, 211, 238, 0.06) !important;
+            border-color: rgba(96, 165, 250, 0.26) !important;
         }
 
         .hero-title,
@@ -116,6 +263,12 @@ st.markdown(
             color: #e5e7eb !important;
         }
 
+        .hero-title,
+        .panel-title,
+        .about-title {
+            text-shadow: 0 0 18px rgba(96, 165, 250, 0.10);
+        }
+
         .hero-subtitle,
         .panel-subtitle,
         .about-text,
@@ -129,14 +282,38 @@ st.markdown(
         div[data-testid="stFileUploader"] section,
         div[data-testid="stSlider"] > div,
         div[data-testid="stTextArea"] textarea {
-            background: #111827 !important;
+            background: linear-gradient(
+                135deg,
+                rgba(17, 24, 39, 0.78),
+                rgba(15, 23, 42, 0.74)
+            ) !important;
             color: #e5e7eb !important;
-            border-color: #243041 !important;
+            border-color: rgba(96, 165, 250, 0.14) !important;
+            box-shadow:
+                0 10px 24px rgba(0,0,0,0.22),
+                0 0 18px rgba(59, 130, 246, 0.04) !important;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        div[data-testid="stTextInput"] input:focus,
+        div[data-baseweb="select"] > div:focus,
+        div[data-testid="stTextArea"] textarea:focus {
+            border-color: rgba(96, 165, 250, 0.28) !important;
+            box-shadow:
+                0 0 0 1px rgba(96, 165, 250, 0.18),
+                0 0 20px rgba(59, 130, 246, 0.10) !important;
         }
 
         div[data-testid="stButton"] button,
         button[kind] {
             filter: brightness(1.02);
+            border: 1px solid rgba(96, 165, 250, 0.20) !important;
+            background: linear-gradient(
+                135deg,
+                rgba(30, 41, 59, 0.92),
+                rgba(15, 23, 42, 0.94)
+            ) !important;
         }
 
         .js-plotly-plot,
@@ -148,7 +325,66 @@ st.markdown(
 
     @media (prefers-color-scheme: light) {
         html, body, [data-testid="stAppViewContainer"], .stApp {
-            background: #f8fafc !important;
+            background:
+                radial-gradient(circle at 14% 16%, rgba(59, 130, 246, 0.08), transparent 22%),
+                radial-gradient(circle at 88% 14%, rgba(14, 165, 233, 0.07), transparent 20%),
+                linear-gradient(135deg, #f8fbff 0%, #f8fafc 42%, #eef5ff 100%) !important;
+        }
+
+        .hero-shell,
+        .kpi-strip,
+        .chart-panel,
+        .summary-card,
+        .table-panel,
+        .about-panel {
+            background: linear-gradient(
+                135deg,
+                rgba(255, 255, 255, 0.78),
+                rgba(248, 250, 252, 0.70)
+            ) !important;
+            border-color: rgba(148, 163, 184, 0.18) !important;
+            box-shadow:
+                0 14px 34px rgba(15, 23, 42, 0.08),
+                0 0 20px rgba(59, 130, 246, 0.04) !important;
+        }
+
+        .hero-shell:hover,
+        .kpi-strip:hover,
+        .chart-panel:hover,
+        .summary-card:hover,
+        .table-panel:hover,
+        .about-panel:hover {
+            box-shadow:
+                0 16px 40px rgba(15, 23, 42, 0.10),
+                0 0 22px rgba(59, 130, 246, 0.08) !important;
+        }
+
+        div[data-testid="stTextInput"] input,
+        div[data-baseweb="select"] > div,
+        div[data-testid="stFileUploader"] section,
+        div[data-testid="stSlider"] > div,
+        div[data-testid="stTextArea"] textarea {
+            background: linear-gradient(
+                135deg,
+                rgba(255, 255, 255, 0.82),
+                rgba(248, 250, 252, 0.76)
+            ) !important;
+            border-color: rgba(148, 163, 184, 0.20) !important;
+            box-shadow:
+                0 10px 24px rgba(15, 23, 42, 0.06),
+                0 0 16px rgba(59, 130, 246, 0.03) !important;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        div[data-testid="stButton"] button,
+        button[kind] {
+            border: 1px solid rgba(96, 165, 250, 0.16) !important;
+            background: linear-gradient(
+                135deg,
+                rgba(255, 255, 255, 0.96),
+                rgba(239, 246, 255, 0.95)
+            ) !important;
         }
     }
 
@@ -161,6 +397,10 @@ st.markdown(
         .fade-up {
             opacity: 1 !important;
             transform: none !important;
+        }
+        .stApp::before,
+        .stApp::after {
+            animation: none !important;
         }
     }
     </style>
